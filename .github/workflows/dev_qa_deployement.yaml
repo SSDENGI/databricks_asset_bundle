@@ -33,10 +33,10 @@ jobs:
          EOF
 
       - name: Deploy to Dev
-        run: Databricks bundle deploy --target dev
+        run: databricks bundle deploy --profile dev --target dev
 
       - name: Deploy to Test
-        run: Databricks bundle deploy --target test
+        run: databricks bundle deploy --profile test --target test
 
       - name: Deploy to Prod
-        run: Databricks bundle deploy --target prod
+        run: databricks bundle deploy --profile prod --target prod
