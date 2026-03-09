@@ -29,12 +29,12 @@ jobs:
           host = https://adb-7405613980711174.14.azuredatabricks.net
           token = ${{ secrets.DATABRICKS_PROD_TOKEN }}
           EOF
-          
+
       - name: Destroy Dev Environment
-        run: databricks bundle destroy --profile dev --target dev
+        run: databricks bundle destroy --auto-approve --profile dev --target dev
 
       - name: Destroy Test Environment
-        run: databricks bundle destroy --profile test --target test
+        run: databricks bundle destroy --auto-approve --profile test --target test
 
       - name: Destroy Prod Environment
-        run: databricks bundle destroy --profile prod --target prod
+        run: databricks bundle destroy --auto-approve --profile prod --target prod
