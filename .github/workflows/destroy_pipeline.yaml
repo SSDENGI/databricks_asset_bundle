@@ -1,0 +1,40 @@
+name: Destroy Pipeline
+on:
+  workflow_dispatch:
+jobs:
+  destroy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Install Databricks CLI
+        run: curl -fsSL https://raw.githubusercontent.com/databricks/setup-cli/main/install.sh | sh
+
+      - name: Configure Databricks CLI
+        run: |
+          cat <<EOF > ~/.databrickscfg
+          [dev]
+          host = https://adb-7405616778394377.17.azuredatabricks.net
+          token = ${{ secrets.DATABRICKS_DEV_TOKEN }}
+          [test]
+          host = https://adb-7405611241496690.10.azuredatabricks.net
+          token = ${{ secrets.DATABRICKS_TEST_TOKEN }}
+          [prod]
+          host = https://adb-7405613980711174.14.azuredatabricks.net
+          token = ${{ secrets.DATABRICKS_PROD_TOKEN }}
+          EOF
+          
+      - name: Destroy Dev Environment
+        run: databricks bundle destroy --profile dev --target dev
+
+      - name: Destroy Test Environment
+        run: databricks bundle destroy --profile test --target test
+
+      - name: Destroy Prod Environment
+        run: databricks bundle destroy --profile prod --target prod
