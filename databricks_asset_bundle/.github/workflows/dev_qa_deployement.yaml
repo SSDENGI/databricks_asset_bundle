@@ -1,0 +1,42 @@
+name: Deve to QA Deployment
+on:
+  push:
+    branches:
+      - main
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Install Databricks CLI
+        run: curl -fsSL https://raw.githubusercontent.com/databricks/setup-cli/main/install.sh | sh
+
+      - name: configure configration file
+        run: |
+         cat <<EOF > ~/.databrickscfghost
+         [dev]
+         host = https://adb-7405616778394377.17.azuredatabricks.net
+         token = ${{ secrets.DATABRICKS_DEV_TOKEN }}
+         [test]
+         host = https://adb-7405611241496690.10.azuredatabricks.net
+         token = ${{ secrets.DATABRICKS_TEST_TOKEN }}
+         [prod]
+         host = https://adb-7405613980711174.14.azuredatabricks.net
+         token = ${{ secrets.DATABRICKS_PROD_TOKEN }}
+         EOF
+
+      - name: Deploy to Dev
+        run: Databricks bundle deploy --target dev
+
+      - name: Deploy to Test
+        run: Databricks bundle deploy --target test
+
+      - name: Deploy to Prod
+        run: Databricks bundle deploy --target prod
