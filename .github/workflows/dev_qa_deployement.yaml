@@ -20,7 +20,7 @@ jobs:
 
       - name: configure configration file
         run: |
-         cat <<EOF > ~/.databrickscfghost
+         cat <<EOF > ~/.databrickscfg
          [dev]
          host = https://adb-7405616778394377.17.azuredatabricks.net
          token = ${{ secrets.DATABRICKS_DEV_TOKEN }}
